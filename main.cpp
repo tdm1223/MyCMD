@@ -34,7 +34,6 @@ int main(int agrc, TCHAR * argv[])
 	return 0;
 }
 
-
 TCHAR cmdString[STR_LEN];
 TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
 TCHAR seps[] = _T(" ,\t\n");
@@ -42,7 +41,7 @@ TCHAR seps[] = _T(" ,\t\n");
 int CmdProcessing(void)
 {
 	_fputts(_T("Best command prompt>> "), stdout);
-	_getts_s(cmdString,sizeof(cmdString));
+	_getts_s(cmdString, sizeof(cmdString));
 
 	TCHAR * token = _tcstok(cmdString, seps);
 
@@ -61,22 +60,31 @@ int CmdProcessing(void)
 	}
 	else if (!_tcscmp(cmdTokenList[0], _T("추가 되는 명령어 1")))
 	{
+
 	}
 	else if (!_tcscmp(cmdTokenList[0], _T("추가 되는 명령어 2")))
 	{
 	}
 	else
 	{
-		_tprintf(ERROR_CMD, cmdTokenList[0]);
+		// 프로그램 실행
+		STARTUPINFO si = { 0, };
+		PROCESS_INFORMATION pi;
+		si.cb = sizeof(si);
+		BOOL isRun = CreateProcess(NULL, cmdTokenList[0], NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi);
+		if (isRun == FALSE)
+		{
+			_tprintf(ERROR_CMD, cmdTokenList[0]);
+		}
 	}
 
 	return 0;
 }
 
-/***********************
-문자열의 내에 존재하는 모든 대문자를 소문자로 변경한다.
-변경된 문자열의 포인터를 반환한다.
-****************************/
+/*
+	문자열의 내에 존재하는 모든 대문자를 소문자로 변경한다.
+	변경된 문자열의 포인터를 반환한다.
+*/
 TCHAR * StrLower(TCHAR *pStr)
 {
 	TCHAR *ret = pStr;
